@@ -1,4 +1,6 @@
 ArelTest::Application.routes.draw do
+  root 'foos#index'
+
   resources :bazs
 
   resources :bars
