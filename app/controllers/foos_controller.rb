@@ -4,6 +4,62 @@ class FoosController < ApplicationController
   # GET /foos
   # GET /foos.json
   def index
+
+    puts "================================================================================"
+    # ActiveRecord における Arel
+    # 1. 自動的に 'select *' が付与される。
+    # 3. 結合条件は model に記述した belongs_to, has_many 等から自動生成される
+    puts Foo
+          .joins(
+            :bars)
+          .to_sql
+    # => SELECT "foos".* FROM "foos" INNER JOIN "bars" ON "bars"."foo_id" = "foos"."id"
+
+    # arel_table における Arel
+    # 1. .project で明示的に抽出カラムを指定する必要がある。
+    # 3. 結合条件も明示的に指定する必要がある。
+    foo = Foo.arel_table
+    bar = Bar.arel_table
+    puts foo
+          .project(
+            foo[Arel.star])
+          .join(
+            :bars)
+          .on(
+            bar[:foo_id].eq foo[:id])
+          .to_sql
+    # => SELECT "foos".* FROM "foos" INNER JOIN 'bars' ON "bars"."foo_id" = "foos"."id"
+
+    puts "================================================================================"
+    # ActiveRecord における　method名
+    # 1. SELECT は　.select
+    #    ※ INNER JOIN 等で複数のテーブルから取得している場合は arel_table でカラム名を指定する必要があるので注意。
+    # 2. INNER JOIN は　.joins
+    puts Foo
+          .select(
+            foo[:name],
+            bar[:name])
+          .joins(
+            :bars)
+          .to_sql
+    # => SELECT "foos"."name", "bars"."name" FROM "foos" INNER JOIN "bars" ON "bars"."foo_id" = "foos"."id"
+    
+    # arel_table における　method名
+    # 1. SELECT は　.project
+    # 2. INNER JOIN は　.join
+    puts foo
+          .project(
+            foo[:name],
+            bar[:name])
+          .join(
+            :bars)
+          .on(
+            bar[:foo_id].eq foo[:id])
+          .to_sql
+    # => SELECT "foos"."name", "bars"."name" FROM "foos" INNER JOIN 'bars' ON "bars"."foo_id" = "foos"."id"
+    puts "================================================================================"
+
+
     @foos = Foo.all
   end
 
