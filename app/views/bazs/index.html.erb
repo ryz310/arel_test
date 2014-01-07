@@ -1,0 +1,29 @@
+<h1>Listing bazs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Bar</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @bazs.each do |baz| %>
+      <tr>
+        <td><%= baz.name %></td>
+        <td><%= baz.bar %></td>
+        <td><%= link_to 'Show', baz %></td>
+        <td><%= link_to 'Edit', edit_baz_path(baz) %></td>
+        <td><%= link_to 'Destroy', baz, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Baz', new_baz_path %>
